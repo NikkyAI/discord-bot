@@ -28,4 +28,4 @@ develocity {
     }
 }
 
-rootProject.name = "twitch-announcement-discordbot"
+rootProject.name = "discordbot"

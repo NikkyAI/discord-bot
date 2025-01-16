@@ -738,7 +738,7 @@ class RoleManagementExtension : Extension(), Klogging {
         }
 
         val (key, roleChooserConfig) = configUnit.get()?.find(
-            section = arguments.newSection,
+            section = arguments.oldSection,
             channelId = channel.id
         ) ?: relayError("no roleselection section ${arguments.oldSection}")
 
@@ -754,7 +754,7 @@ class RoleManagementExtension : Extension(), Klogging {
         val (_, newRoleChooserConfig) = configUnit.get()?.find(
             section = arguments.newSection,
             channelId = channel.id
-        ) ?: relayError("no roleselection section ${arguments.newSection}")
+        ) ?: relayError("failed to save section ${arguments.newSection}")
 
         val newRoleMapping = newRoleChooserConfig.roleMapping
 
