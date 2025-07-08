@@ -17,7 +17,6 @@ import io.klogging.logger
 import io.klogging.sending.STDOUT
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.debug.DebugProbes
-import moe.nikky.twitch.TwitchExtension
 import org.koin.dsl.module
 import java.io.File
 import java.security.Security
@@ -61,6 +60,7 @@ suspend fun main() {
             add(::ConfigurationExtension)
             add(::BotInfoExtension)
             add(::DiceExtension)
+            add(::AutoKickExtension)
             add(::RoleManagementExtension)
 //            add(::TwitchExtension)
             add(::LocalTimeExtension)

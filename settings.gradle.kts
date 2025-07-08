@@ -9,7 +9,12 @@ pluginManagement {
 }
 
 plugins {
-    id("com.gradle.develocity") version "3.18.1"
+    id("com.gradle.develocity") version "3.19"
+////                        # available:"3.19.1"
+////                        # available:"3.19.2"
+////                        # available:"4.0"
+////                        # available:"4.0.1"
+////                        # available:"4.0.2"
     id("de.fayard.refreshVersions") version "0.60.5"
 }
 

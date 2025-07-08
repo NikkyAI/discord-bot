@@ -35,6 +35,7 @@ class BotInfoExtension : Extension(), Klogging {
             Permission.ManageWebhooks,
             Permission.ReadMessageHistory,
             Permission.ManageEvents,
+            Permission.KickMembers,
         )
         val scopes = listOf(
             "bot",
