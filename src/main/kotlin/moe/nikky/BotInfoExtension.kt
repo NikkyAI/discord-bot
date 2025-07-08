@@ -24,7 +24,7 @@ class BotInfoExtension : Extension(), Klogging {
 
     private val configurationExtension: ConfigurationExtension by inject()
     private val roleManagementExtension: RoleManagementExtension by inject()
-    private val twitchExtensions: TwitchExtension by inject()
+//    private val twitchExtensions: TwitchExtension by inject()
 
     private val inviteUrl: String = runBlocking {
         val permission = Permissions(
@@ -47,13 +47,6 @@ class BotInfoExtension : Extension(), Klogging {
             parameters.append("scope", scopes.joinToString(" "))
         }.build().toString().also { inviteUrl ->
             logger.infoF { "invite: $inviteUrl" }
-        }
-    }
-
-    inner class SetAdminRoleArgs : Arguments() {
-        val role by role {
-            name = "role".toKey()
-            description = "admin role".toKey()
         }
     }
 
@@ -92,20 +85,27 @@ class BotInfoExtension : Extension(), Klogging {
                                 }
                                     .joinToString("\n\n")
 
-                            val twitch = twitchExtensions.loadConfig(guild)?.configs?.values.orEmpty()
-                                .sortedBy { it.roleId }
-                                .sortedBy { it.channelId }
-                                .map { twitchNotif ->
-                                    val channel = twitchNotif.channel(guild)
-                                "${channel.mention} ${twitchNotif.role(guild).mention} <${twitchNotif.twitchUrl}>"
-                            }.joinToString("\n")
+//                            val twitch = twitchExtensions.loadConfig(guild)?.configs?.values.orEmpty()
+//                                .sortedBy { it.roleId }
+//                                .sortedBy { it.channelId }
+//                                .map { twitchNotif ->
+//                                    val channel = twitchNotif.channel(guild)
+//                                    "${channel.mention} ${twitchNotif.role(guild).mention} <${twitchNotif.twitchUrl}>"
+//                                }.joinToString("\n")
+
                             content = """
                                 |adminRole: ${guildConfig.adminRole(guild)?.mention}
                                 |role pickers: 
                                 ${choosableRoles.indent("|  ")}
-                                |twitch notifications:
-                                ${twitch.indent("|  ")}
                             """.trimMargin()
+
+//                            content = """
+//                                |adminRole: ${guildConfig.adminRole(guild)?.mention}
+//                                |role pickers:
+//                                ${choosableRoles.indent("|  ")}
+//                                |twitch notifications:
+//                                ${twitch.indent("|  ")}
+//                            """.trimMargin()
                         }
                     }
                 }

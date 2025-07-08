@@ -7,6 +7,7 @@ import dev.kord.core.behavior.GuildBehavior
 import dev.kord.core.behavior.channel.ChannelBehavior
 import dev.kord.core.entity.Guild
 import dev.kord.core.entity.Role
+import dev.kord.core.event.guild.GuildCreateEvent
 import dev.kord.core.event.guild.MemberUpdateEvent
 import dev.kordex.core.commands.Arguments
 import dev.kordex.core.commands.application.slash.ephemeralSubCommand
@@ -71,7 +72,6 @@ class AutoKickExtension() : Extension(), Klogging {
 
 
     override suspend fun setup() {
-
         ephemeralSlashCommand {
             name = "autokick".toKey()
             description = "sets the autokick role".toKey()
@@ -142,7 +142,7 @@ class AutoKickExtension() : Extension(), Klogging {
             action {
                 withLogContext(event, event.guild) { guild ->
                     val config = guild.config().get()
-                    if(config == null) {
+                    if (config == null) {
                         return@withLogContext
                     }
 
@@ -154,12 +154,20 @@ class AutoKickExtension() : Extension(), Klogging {
 
                         val autoKickRole = guild.config().get()?.getRole(guild)
 
-                        if(autoKickRole != null && autoKickRole in newRoles) {
+                        if (autoKickRole != null && autoKickRole in newRoles) {
 
                             logger.warn { "kicking ${event.member.effectiveName} for having role ${autoKickRole.name}" }
                             event.member.kick(reason = "autokicked due to being assigned ${autoKickRole.mention}")
                         }
                     }
+                }
+            }
+        }
+
+        event<GuildCreateEvent> {
+            action {
+                withLogContext(event, event.guild) { guild ->
+                    logger.infoF { "autokick module loaded on server: ${guild.name}" }
                 }
             }
         }

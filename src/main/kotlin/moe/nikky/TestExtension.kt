@@ -58,7 +58,7 @@ class TestExtension : Extension(), Klogging {
                     arguments.target ?: user
                 }
 
-                this.respond {
+                respond {
                     content = "*slaps ${realTarget.mention} with ${arguments.weapon.message}*"
                 }
             }

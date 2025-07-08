@@ -64,9 +64,9 @@ suspend fun main() {
             add(::RoleManagementExtension)
 //            add(::TwitchExtension)
             add(::LocalTimeExtension)
-            add(::SchedulingExtension)
             if (TEST_GUILD_ID != null) {
                 add(::TestExtension)
+                add(::SchedulingExtension)
             }
             help {
                 enableBundledExtension = true
@@ -82,8 +82,8 @@ suspend fun main() {
         }
         presence {
             status = PresenceStatus.Idle
-            afk = true
-            state = "booting"
+            afk = false
+            state = "beep boop"
         }
         hooks {
             kordShutdownHook = true
