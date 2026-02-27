@@ -15,8 +15,7 @@ import kotlinx.coroutines.flow.emptyFlow
 import kotlinx.coroutines.flow.flatMapConcat
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
-import kotlinx.datetime.Clock
-import kotlinx.datetime.Instant
+import kotlin.time.Instant
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
@@ -33,6 +32,8 @@ import moe.nikky.debugF
 import moe.nikky.errorF
 import moe.nikky.infoF
 import moe.nikky.traceF
+import kotlin.let
+import kotlin.time.Clock
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.hours
 import kotlin.time.Duration.Companion.minutes
@@ -52,7 +53,7 @@ object TwitchApi : Klogging {
 
     suspend fun HttpClient.getToken(): Token {
         token?.let { token ->
-            if ((Clock.System.now() + 10.minutes) < token.tokenExpiration) {
+            if ((kotlin.time.Clock.System.now() + 10.minutes) < token.tokenExpiration) {
                 logger.traceF { "reusing token" }
                 return token
             }

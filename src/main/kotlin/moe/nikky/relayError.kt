@@ -2,10 +2,9 @@ package moe.nikky
 
 import dev.kordex.core.DiscordRelayedException
 import dev.kordex.core.i18n.toKey
-import dev.kordex.core.i18n.types.Key
 
-fun relayError(messageKey: Key): Nothing {
-    throw DiscordRelayedException(messageKey)
+fun relayError(messageKey: dev.kordex.i18n.Key): Nothing {
+    throw DiscordRelayedException(messageKey) as Throwable
 }
 
 @Deprecated("replace with key")

@@ -33,7 +33,7 @@ import dev.kord.core.entity.channel.TopGuildMessageChannel
 import dev.kord.core.entity.interaction.followup.EphemeralFollowupMessage
 import dev.kordex.core.i18n.toKey
 import io.klogging.Klogging
-import kotlinx.datetime.Instant
+import kotlin.time.Instant
 import kotlinx.datetime.LocalDateTime
 import kotlinx.datetime.LocalTime
 import kotlinx.datetime.format
@@ -53,7 +53,7 @@ class SchedulingExtension() : Extension(), Klogging {
 
     @Serializable
     data class SchedulingData(
-        val events: Map<String, EventData> = emptyMap()
+        val events: Map<String, EventData> = emptyMap(),
     ) : Data {
 
         fun update(key: String, event: EventData): SchedulingData {
@@ -80,17 +80,18 @@ class SchedulingExtension() : Extension(), Klogging {
         val start: Instant,
         val end: Instant,
         val slotLength: Duration = 30.minutes,
-        val signups: List<Signup>
+        val signups: List<Signup>,
     ) {
         fun addSignup(
-            signup: Signup
+            signup: Signup,
         ): EventData {
             return copy(
                 signups = (signups + signup).distinct()
             )
         }
+
         fun removeSignup(
-            signup: Signup
+            signup: Signup,
         ): EventData {
             return copy(
                 signups = (signups - signup)
@@ -611,7 +612,7 @@ class SchedulingExtension() : Extension(), Klogging {
                                             scheduledEvent.start.epochSeconds..scheduledEvent.end.epochSeconds step scheduledEvent.slotLength.inWholeSeconds
                                         timeslots.forEachIndexed() { index, epochSeconds ->
                                             val instant = Instant.fromEpochSeconds(epochSeconds)
-                                            val localDatetime =  instant
+                                            val localDatetime = instant
                                                 .toLocalDateTime(timezone)
                                             val formattedTime = localDatetime
                                                 .format(localDatetimeFormat)
@@ -630,8 +631,7 @@ class SchedulingExtension() : Extension(), Klogging {
                                                 }
                                                 description = "slot: $index, until $formattedTimeEnd".toKey()
 
-
-                                                emoji = DiscordPartialEmoji(
+                                                partialEmoji = DiscordPartialEmoji(
                                                     name = emojiForTime(localDatetime.time)
                                                 )
                                             }

@@ -1,8 +1,8 @@
 package moe.nikky
 
-import kotlinx.datetime.Clock
+import kotlin.time.Clock
 import kotlinx.datetime.DateTimePeriod
-import kotlinx.datetime.Instant
+import kotlin.time.Instant
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.plus
 import kotlin.time.Duration
@@ -17,7 +17,7 @@ public fun DateTimePeriod.toDuration(): Duration {
     return applied - now
 }
 public fun DateTimePeriod.fromNow(): Instant {
-    val now = Clock.System.now()
+    val now = kotlin.time.Clock.System.now()
     val applied = now.plus(this, TimeZone.UTC)
 
     return applied

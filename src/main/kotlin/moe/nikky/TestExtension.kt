@@ -24,12 +24,10 @@ import dev.kord.core.behavior.createScheduledEvent
 import dev.kord.core.entity.Guild
 import dev.kord.core.event.message.MessageCreateEvent
 import dev.kordex.core.i18n.toKey
-import dev.kordex.core.i18n.types.Key
+import dev.kordex.i18n.Key
 import io.klogging.Klogging
-import kotlinx.coroutines.flow.toList
-import kotlinx.datetime.Clock
 import kotlinx.datetime.DateTimePeriod
-import kotlinx.datetime.Instant
+import kotlin.time.Instant
 import moe.nikky.twitch.TwitchExtension
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.hours

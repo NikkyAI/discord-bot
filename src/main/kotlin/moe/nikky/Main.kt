@@ -60,13 +60,13 @@ suspend fun main() {
             add(::ConfigurationExtension)
             add(::BotInfoExtension)
             add(::DiceExtension)
-            add(::AutoKickExtension)
             add(::RoleManagementExtension)
 //            add(::TwitchExtension)
             add(::LocalTimeExtension)
             if (TEST_GUILD_ID != null) {
                 add(::TestExtension)
                 add(::SchedulingExtension)
+                add(::AutoKickExtension)
             }
             help {
                 enableBundledExtension = true
@@ -81,7 +81,7 @@ suspend fun main() {
 //            extPluralKit()
         }
         presence {
-            status = PresenceStatus.Idle
+            status = PresenceStatus.Online
             afk = false
             state = "beep boop"
         }

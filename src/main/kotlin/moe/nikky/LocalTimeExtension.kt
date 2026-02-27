@@ -19,9 +19,9 @@ import dev.kordex.core.i18n.toKey
 import io.klogging.Klogging
 import io.ktor.client.request.forms.*
 import io.ktor.utils.io.*
-import kotlinx.datetime.Clock
+import kotlin.time.Clock
 import kotlinx.datetime.IllegalTimeZoneException
-import kotlinx.datetime.Instant
+import kotlin.time.Instant
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.offsetAt
 import kotlinx.datetime.toLocalDateTime

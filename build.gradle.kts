@@ -6,7 +6,7 @@ plugins {
     kotlin("jvm")
     kotlin("plugin.serialization")
     id("com.google.devtools.ksp")
-    id("com.github.johnrengelman.shadow")
+    id("com.gradleup.shadow")
     id("dev.kordex.gradle.kordex")
 //    id("dev.kordex.gradle.docker") version "1.4.2"
     id("dev.reformator.stacktracedecoroutinator")
@@ -85,14 +85,11 @@ tasks {
         archiveVersion.set("")
     }
 
-    register("buildImage") {
+    register<Exec>("buildImage") {
         group = "build"
         dependsOn(shadowJar)
-        doLast {
-            exec {
-                commandLine("docker", "build", "-t", "nikkyai/discordbot:dev", "-f", "local.Dockerfile", ".")
-            }
-        }
+
+        commandLine("docker", "build", "-t", "nikkyai/discordbot:dev", "-f", "local.Dockerfile", ".")
     }
 //    register("pushImage") {
 //        group = "build"

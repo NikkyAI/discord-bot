@@ -25,7 +25,6 @@ import dev.kordex.core.annotations.converters.ConverterType
 import dev.kordex.core.commands.ChoiceOptionWrapper
 import dev.kordex.core.commands.OptionWrapper
 import dev.kordex.core.i18n.toKey
-import dev.kordex.core.i18n.types.Key
 import dev.kordex.parser.StringParser
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.mapNotNull

@@ -1,7 +1,6 @@
 package moe.nikky
 
 import dev.kord.common.entity.Permission
-import dev.kord.common.entity.Permissions
 import dev.kord.common.entity.Snowflake
 import dev.kord.core.behavior.GuildBehavior
 import dev.kord.core.behavior.channel.ChannelBehavior
@@ -12,11 +11,9 @@ import dev.kord.core.event.guild.MemberUpdateEvent
 import dev.kordex.core.commands.Arguments
 import dev.kordex.core.commands.application.slash.ephemeralSubCommand
 import dev.kordex.core.commands.converters.impl.role
-import dev.kordex.core.commands.converters.impl.string
 import dev.kordex.core.extensions.Extension
 import dev.kordex.core.extensions.ephemeralSlashCommand
 import dev.kordex.core.extensions.event
-import dev.kordex.core.extensions.publicSlashCommand
 import dev.kordex.core.i18n.toKey
 import dev.kordex.core.storage.Data
 import dev.kordex.core.storage.StorageType
@@ -24,8 +21,6 @@ import dev.kordex.core.storage.StorageUnit
 import io.klogging.Klogging
 import kotlinx.coroutines.flow.toList
 import kotlinx.serialization.Serializable
-import moe.nikky.AutoKickExtension.AutoKickArgs
-import moe.nikky.RoleManagementExtension.AddRoleArg
 import org.koin.core.component.inject
 import org.koin.dsl.module
 import kotlin.getValue
@@ -63,7 +58,13 @@ class AutoKickExtension() : Extension(), Klogging {
         )
     }
 
-    inner class AutoKickArgs : Arguments() {
+    inner class AutoKickArgsAdd : Arguments() {
+        val role by role {
+            name = "role".toKey()
+            description = "Role".toKey()
+        }
+    }
+    inner class AutoKickArgsRemove : Arguments() {
         val role by role {
             name = "role".toKey()
             description = "Role".toKey()
@@ -102,9 +103,9 @@ class AutoKickExtension() : Extension(), Klogging {
                     }
                 }
             }
-            ephemeralSubCommand(::AutoKickArgs) {
-                name = "setup".toKey()
-                description = "disables autokick".toKey()
+            ephemeralSubCommand(::AutoKickArgsAdd) {
+                name = "add".toKey()
+                description = "add role to autokick".toKey()
 
                 requireBotPermissions(*requiredPermissions)
 
@@ -114,7 +115,31 @@ class AutoKickExtension() : Extension(), Klogging {
 
                 action {
                     withLogContext(event, guild) { guild ->
-                        val responseMessage = setupAutokick(
+                        val responseMessage = addAutokick(
+                            guild,
+                            arguments,
+                            event.interaction.channel
+                        )
+
+                        respond {
+                            content = responseMessage
+                        }
+                    }
+                }
+            }
+            ephemeralSubCommand(::AutoKickArgsRemove) {
+                name = "remove".toKey()
+                description = "remove role from autokick".toKey()
+
+                requireBotPermissions(*requiredPermissions)
+
+                check {
+                    with(config) { requiresBotControl() }
+                }
+
+                action {
+                    withLogContext(event, guild) { guild ->
+                        val responseMessage = removeAutokick(
                             guild,
                             arguments,
                             event.interaction.channel
@@ -152,12 +177,15 @@ class AutoKickExtension() : Extension(), Klogging {
 //                        logger.info { "old roles: ${oldRoles}" }
 //                        logger.info { "new roles: ${newRoles}" }
 
-                        val autoKickRole = guild.config().get()?.getRole(guild)
+                        val autoKickRoles = guild.config().get()?.roles
 
-                        if (autoKickRole != null && autoKickRole in newRoles) {
-
-                            logger.warn { "kicking ${event.member.effectiveName} for having role ${autoKickRole.name}" }
-                            event.member.kick(reason = "autokicked due to being assigned ${autoKickRole.mention}")
+                        if (newRoles.isNotEmpty() && !autoKickRoles.isNullOrEmpty()) {
+                            newRoles.forEach { role ->
+                                if(role.id in autoKickRoles) {
+                                    logger.warn { "kicking ${event.member.effectiveName} for having role ${role.name}" }
+                                    event.member.kick(reason = "autokicked due to being assigned ${role.mention}")
+                                }
+                            }
                         }
                     }
                 }
@@ -174,19 +202,45 @@ class AutoKickExtension() : Extension(), Klogging {
     }
 
 
-    private suspend fun setupAutokick(
+    private suspend fun addAutokick(
         guild: Guild,
-        arguments: AutoKickArgs,
+        arguments: AutoKickArgsAdd,
         currentChannel: ChannelBehavior,
     ): String {
         val configUnit = guild.config()
 
-        configUnit.save(
-            AutokickConfig(
-                arguments.role.id
+        val oldConfig = configUnit.get() ?: AutokickConfig(
+            emptySet()
+        )
+        val newConfig = configUnit.save(
+            oldConfig.copy(
+                roles = oldConfig.roles + arguments.role.id
             )
         )
-        return "setup autokick config"
+        logger.infoF { "autokick config updated $newConfig" }
+        return "autokick config updated \n```$newConfig```"
+    }
+
+    private suspend fun removeAutokick(
+        guild: Guild,
+        arguments: AutoKickArgsRemove,
+        currentChannel: ChannelBehavior,
+    ): String {
+        val configUnit = guild.config()
+
+        val oldConfig = configUnit.get() ?: AutokickConfig(
+            emptySet()
+        )
+        if(arguments.role.id !in oldConfig.roles) {
+            relayError("role ${arguments.role.mention} was not in configuration")
+        }
+        val newConfig = configUnit.save(
+            oldConfig.copy(
+                roles = oldConfig.roles - arguments.role.id
+            )
+        )
+        logger.infoF { "autokick config updated $newConfig" }
+        return "autokick config updated \n```$newConfig```"
     }
 
     private suspend fun disableAutokick(
@@ -203,9 +257,11 @@ class AutoKickExtension() : Extension(), Klogging {
 
 @Serializable
 data class AutokickConfig(
-    val role: Snowflake,
+    val roles: Set<Snowflake>,
 ) : Data {
-    suspend fun getRole(guildBehavior: GuildBehavior): Role {
-        return guildBehavior.getRole(role)
+    suspend fun getRoles(guildBehavior: GuildBehavior): List<Role> {
+        return roles.map { role ->
+            guildBehavior.getRole(role)
+        }
     }
 }
