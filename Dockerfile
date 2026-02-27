@@ -1,4 +1,4 @@
-FROM gradle:8.14.3-jdk21 AS build
+FROM gradle:9.3.1-jdk25 AS build
 COPY --chown=gradle:gradle . /home/gradle/src
 WORKDIR /home/gradle/src
 # RUN ls -la /home/gradle/src && gradle -Pksp.useKSP2=true clean :shadowJar --no-daemon

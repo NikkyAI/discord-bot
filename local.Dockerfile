@@ -1,4 +1,4 @@
-FROM openjdk:17-alpine AS runtime
+FROM eclipse-temurin:25-alpine AS runtime
 
 RUN mkdir /app
 
