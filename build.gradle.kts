@@ -89,7 +89,7 @@ tasks {
         group = "build"
         dependsOn(shadowJar)
 
-        commandLine("docker", "build", "-t", "nikkyai/discordbot:dev", "-f", "local.Dockerfile", ".")
+        commandLine("docker", "build", "-t", "local/discordbot:dev", "-f", "local.Dockerfile", ".")
     }
 //    register("pushImage") {
 //        group = "build"

@@ -37,7 +37,7 @@ you can add multiple roles to the same section, they will be added to the same m
 
 # run the bot
 
-docker images: https://hub.docker.com/repository/docker/nikkyai/twitch-announcement-discord-bot
+docker images: https://hub.docker.com/repository/docker/nikkyai/discordbot
 
 see [docker-compose.yml](./docker-compose.yml)
 
