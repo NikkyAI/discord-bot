@@ -5,7 +5,7 @@ WORKDIR /home/gradle/src
 RUN gradle :shadowJar
 # RUN ./gradlew clean :shadowJar
 
-FROM amazoncorretto:21 AS runtime
+FROM amazoncorretto:25 AS runtime
 
 RUN mkdir /app
 
